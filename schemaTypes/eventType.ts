@@ -1,4 +1,4 @@
-import {defineType} from 'sanity'
+import {defineField, defineType} from 'sanity'
 import {CalendarIcon} from '@sanity/icons'
 import {DoorsOpenInput} from './components/DoorsOpenInput'
 
@@ -13,8 +13,8 @@ export const eventType = defineType({
   ],
   fields: [
     {
-      name: 'title',
-      title: 'Title',
+      name: 'name',
+      title: 'Name',
       type: 'string',
       group: ['details', 'editorial'],
     },
@@ -23,10 +23,10 @@ export const eventType = defineType({
       title: 'Slug',
       type: 'slug',
       options: {
-        source: 'title',
+        source: 'name',
       },
       validation: (rule) => rule.required().error('Required to generate a URL'),
-      hidden: ({document}) => !document?.title,
+      hidden: ({document}) => !document?.name,
       group: 'details',
     },
     {
@@ -99,26 +99,29 @@ export const eventType = defineType({
   ],
   preview: {
     select: {
-      title: 'title',
+      name: 'name',
       venue: 'venue.name',
       artist: 'headline.name',
       date: 'date',
-      image: 'image'
+      image: 'image',
     },
-    prepare({title, venue, artist, date, image}) {
-      const titleFormatted = title || 'Untitled event'
-      const dateFormatted = date ? new Date(date).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }) : 'No date set';
-
+    prepare({name, venue, artist, date, image}) {
+      const nameFormatted = name || 'Untitled event'
+      const dateFormatted = date
+        ? new Date(date).toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+        })
+        : 'No date'
 
       return {
-        title: artist ? `${titleFormatted} ${artist}` : titleFormatted,
+        title: artist ? `${nameFormatted} (${artist})` : nameFormatted,
         subtitle: venue ? `${dateFormatted} at ${venue}` : dateFormatted,
         media: image || CalendarIcon,
       }
-    }
-  }
+    },
+  },
 })
