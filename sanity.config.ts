@@ -4,6 +4,7 @@ import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 import {structure} from './structure'
 import {defaultDocumentNode} from './defaultDocumentNode'
+import {tags} from 'sanity-plugin-tags'
 
 export default defineConfig({
   name: 'default',
@@ -15,7 +16,7 @@ export default defineConfig({
   plugins: [structureTool({
     structure,
     defaultDocumentNode
-  }), visionTool()],
+  }), visionTool(), tags({})],
 
   schema: {
     types: schemaTypes,
